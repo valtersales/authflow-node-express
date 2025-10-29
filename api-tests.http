@@ -1,0 +1,123 @@
+### AuthFlow API Tests
+### Use this collection with REST Client (VS Code) or HTTP Client (IntelliJ)
+
+@baseUrl = http://localhost:3000
+@contentType = application/json
+
+### Variables (fill after receiving responses)
+@accessToken = your-access-token-here
+@refreshToken = your-refresh-token-here
+
+###############################################
+# HEALTH CHECK
+###############################################
+
+### Health Check
+GET {{baseUrl}}/health
+
+###############################################
+# AUTHENTICATION
+###############################################
+
+### 1. Register User
+POST {{baseUrl}}/api/auth/register
+Content-Type: {{contentType}}
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "pass123"
+}
+
+### 2. Login
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "john@example.com",
+  "password": "pass123"
+}
+
+### 3. Refresh Token
+POST {{baseUrl}}/api/auth/refresh
+Content-Type: {{contentType}}
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### 4. Logout (invalidate one refresh token)
+POST {{baseUrl}}/api/auth/logout
+Content-Type: {{contentType}}
+Authorization: Bearer {{accessToken}}
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### 5. Logout All (invalidate all refresh tokens)
+POST {{baseUrl}}/api/auth/logout-all
+Content-Type: {{contentType}}
+Authorization: Bearer {{accessToken}}
+
+###############################################
+# USER ROUTES
+###############################################
+
+### 6. Get User Profile
+GET {{baseUrl}}/api/users/profile
+Authorization: Bearer {{accessToken}}
+
+### 7. Update User Profile
+PUT {{baseUrl}}/api/users/profile
+Content-Type: {{contentType}}
+Authorization: Bearer {{accessToken}}
+
+{
+  "name": "John Smith"
+}
+
+### 8. Get All Users (Admin Only)
+GET {{baseUrl}}/api/users
+Authorization: Bearer {{accessToken}}
+
+###############################################
+# ERROR CASES (for testing)
+###############################################
+
+### Register with invalid email
+POST {{baseUrl}}/api/auth/register
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "invalid-email",
+  "password": "pass123"
+}
+
+### Register with weak password (no number)
+POST {{baseUrl}}/api/auth/register
+Content-Type: {{contentType}}
+
+{
+  "name": "Test User",
+  "email": "test@example.com",
+  "password": "weakpassword"
+}
+
+### Login with wrong credentials
+POST {{baseUrl}}/api/auth/login
+Content-Type: {{contentType}}
+
+{
+  "email": "john@example.com",
+  "password": "wrongpassword"
+}
+
+### Access protected route without token
+GET {{baseUrl}}/api/users/profile
+
+### Access protected route with invalid token
+GET {{baseUrl}}/api/users/profile
+Authorization: Bearer invalid-token-here
+
