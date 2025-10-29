@@ -57,6 +57,7 @@ authflow-node-express/
 │   └── server.js                # Application entry point
 ├── .dockerignore
 ├── .editorconfig
+├── .env.examplo
 ├── .gitignore
 ├── .nvmrc
 ├── .prettierrc
